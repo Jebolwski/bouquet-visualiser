@@ -1,0 +1,25 @@
+# Next.js
+/.next/
+/out/
+
+# Dependencies
+/node_modules/
+/.pnp
+.pnp.js
+
+# Testing & Coverage
+/coverage
+
+# Environment
+.env*.local
+
+# Vercel
+.vercel
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
+
+# Operating System
+.DS_Store
+Thumbs.db
