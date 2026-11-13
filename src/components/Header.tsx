@@ -49,9 +49,9 @@ export const Header: React.FC = () => {
           <Flower className="w-5 h-5" />
         </div>
         <div>
-          <h1 className="font-serif font-bold text-base md:text-lg text-stone-900 dark:text-stone-50 tracking-tight flex items-center gap-1.5">
+          <h1 className="font-serif font-bold text-base md:text-lg text-stone-900 dark:text-stone-50 tracking-tight flex items-center gap-1.5 whitespace-nowrap">
             FLEUR & ARTISAN
-            <span className="text-[10px] font-sans font-semibold uppercase px-1.5 py-0.5 rounded bg-rose-100 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300">
+            <span className="hidden sm:inline-block text-[10px] font-sans font-semibold uppercase px-1.5 py-0.5 rounded bg-rose-100 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300">
               3D Studio
             </span>
           </h1>
@@ -152,7 +152,7 @@ export const Header: React.FC = () => {
         <button
           type="button"
           onClick={() => setIsSummaryModalOpen(true)}
-          className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-stone-900 text-white hover:bg-stone-800 hover:text-white dark:bg-stone-100 dark:text-stone-900 dark:hover:bg-stone-200 dark:hover:text-stone-950 transition-all text-xs font-medium shadow-sm hover:shadow-md"
+          className="shrink-0 whitespace-nowrap flex items-center gap-2 px-3.5 py-2 rounded-xl bg-stone-900 text-white hover:bg-stone-800 hover:text-white dark:bg-stone-100 dark:text-stone-900 dark:hover:bg-stone-200 dark:hover:text-stone-950 transition-all text-xs font-medium shadow-sm hover:shadow-md"
         >
           <Sparkles className="w-3.5 h-3.5" />
           <span>Buketi Tamamla</span>

@@ -31,8 +31,8 @@ export const DaisyMesh: React.FC<DaisyMeshProps> = ({
       {/* 3D Curved Stem */}
       <StemCurveMesh curvePoints={stemCurvePoints} stemColor="#3a5c2d" radius={0.018} />
 
-      {/* Flower Head */}
-      <group position={position} rotation={rotation} scale={scale}>
+      {/* Flower Head (scaled to natural proportion relative to tulips & roses) */}
+      <group position={position} rotation={rotation} scale={scale * 0.48}>
         {/* Calyx green base */}
         <mesh position={[0, -0.04, 0]} castShadow>
           <sphereGeometry args={[0.08, 12, 12, 0, Math.PI * 2, Math.PI * 0.5, Math.PI * 0.5]} />
