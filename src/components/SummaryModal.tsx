@@ -124,6 +124,12 @@ export const SummaryModal: React.FC = () => {
                   ? 'Şeffaf Jelatin'
                   : wrapping.type === 'silk'
                   ? 'Pastel İpek'
+                  : wrapping.type === 'vase_teardrop'
+                  ? `Damla Cam Vazo (${(wrapping.hasWater ?? true) ? 'Sulu' : 'Susuz'})`
+                  : wrapping.type === 'vase_ribbed'
+                  ? `Fitilli Metalik Vazo (${(wrapping.hasWater ?? true) ? 'Sulu' : 'Susuz'})`
+                  : wrapping.type === 'vase_tall'
+                  ? `Uzun Klasik Cam Vazo (${(wrapping.hasWater ?? true) ? 'Sulu' : 'Susuz'})`
                   : 'Doğal Rafya'}
               </span>
             </div>

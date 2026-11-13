@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import * as THREE from 'three';
 import { useBouquetStore } from '@/store/useBouquetStore';
+import { isVaseWrapping } from '@/types';
 import { getRibbonGeometry, WAIST_Y } from '@/utils/math';
 
 export const RibbonMesh: React.FC = () => {
@@ -94,7 +95,7 @@ export const RibbonMesh: React.FC = () => {
     };
   }, [bowScale, skirtSlope, gap, ribbonWidth]);
 
-  if (!ribbon.enabled) return null;
+  if (!ribbon.enabled || isVaseWrapping(wrappingType)) return null;
 
   const material = (
     <meshStandardMaterial

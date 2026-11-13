@@ -33,17 +33,30 @@ export interface BouquetItem {
   twist: number;
 }
 
-export type WrappingType = 'newspaper' | 'kraft' | 'cellophane' | 'silk' | 'none';
+export type WrappingType =
+  | 'newspaper'
+  | 'kraft'
+  | 'cellophane'
+  | 'silk'
+  | 'none'
+  | 'vase_teardrop'
+  | 'vase_ribbed'
+  | 'vase_tall';
+
+export function isVaseWrapping(type: WrappingType): boolean {
+  return type === 'vase_teardrop' || type === 'vase_ribbed' || type === 'vase_tall';
+}
 
 export type NewspaperStyle = 'vintage_gazette' | 'botanical_times' | 'french_chic' | 'modern_monochrome';
 
 export interface WrappingSettings {
   type: WrappingType;
   newspaperStyle: NewspaperStyle;
-  primaryColor: string;      // Used for kraft or silk tint
+  primaryColor: string;      // Used for kraft, silk tint, or vase tint
   accentColor: string;       // Inner lining tissue color
   hasInnerLining: boolean;
   hasStemWrap: boolean;      // Lower skirt wrap covering stems (like in florist reference)
+  hasWater?: boolean;        // Whether vase contains water
   roughness: number;
   opacity: number;
 }
@@ -68,7 +81,12 @@ export interface GreetingCardSettings {
 
 export type ArrangementStyle = 'dome' | 'spiral' | 'wild_meadow' | 'fan';
 
-export type LightingPreset = 'studio' | 'golden_hour' | 'soft_pastel' | 'dramatic_noir';
+export type LightingPreset =
+  | 'studio'
+  | 'golden_hour'
+  | 'soft_pastel'
+  | 'dramatic_noir'
+  | 'stage_lighting';
 
 export interface SceneSettings {
   lighting: LightingPreset;

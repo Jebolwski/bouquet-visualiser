@@ -40,7 +40,13 @@ export const ViewportControls: React.FC = () => {
   };
 
   const nextLighting = () => {
-    const sequence: LightingPreset[] = ['studio', 'golden_hour', 'soft_pastel', 'dramatic_noir'];
+    const sequence: LightingPreset[] = [
+      'studio',
+      'golden_hour',
+      'soft_pastel',
+      'dramatic_noir',
+      'stage_lighting',
+    ];
     const currentIdx = sequence.indexOf(scene.lighting);
     const nextIdx = (currentIdx + 1) % sequence.length;
     setLighting(sequence[nextIdx]);
@@ -153,6 +159,8 @@ export const ViewportControls: React.FC = () => {
               ? 'Gün Batımı'
               : scene.lighting === 'soft_pastel'
               ? 'Pastel'
+              : scene.lighting === 'stage_lighting'
+              ? 'Sahne'
               : 'Noir'}
           </span>
         </button>

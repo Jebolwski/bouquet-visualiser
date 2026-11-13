@@ -44,6 +44,7 @@ export const ArrangementTab: React.FC = () => {
     { id: 'golden_hour', name: 'Gün Batımı', icon: '🌅' },
     { id: 'soft_pastel', name: 'Pastel İskandinav', icon: '🌸' },
     { id: 'dramatic_noir', name: 'Dramatik Noir', icon: '🌙' },
+    { id: 'stage_lighting', name: 'Sahne Işığı', icon: '🎭' },
   ];
 
   return (

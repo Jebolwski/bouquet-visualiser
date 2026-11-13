@@ -55,6 +55,11 @@ export default function Home() {
                   background:
                     'radial-gradient(circle at 64% 16%, #1f2230 0%, #101117 52%, #060609 100%)',
                 }
+              : lighting === 'stage_lighting'
+              ? {
+                  background:
+                    'radial-gradient(circle at 50% 82%, #231d2b 0%, #111018 52%, #050508 100%)',
+                }
               : undefined
           }
         >

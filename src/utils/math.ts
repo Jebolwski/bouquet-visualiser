@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { ArrangementStyle } from '@/types';
+import { ArrangementStyle, WrappingType, isVaseWrapping } from '@/types';
 
 export interface FlowerTransform {
   position: [number, number, number];
@@ -29,20 +29,32 @@ export function calculateBouquetLayout(
   arrangementStyle: ArrangementStyle = 'dome',
   tightness: number = 1.0,
   stemSpread: number = 1.0,
-  heightVariance: number = 0.15
+  heightVariance: number = 0.15,
+  wrappingType: WrappingType = 'newspaper'
 ): FlowerTransform {
+  const isVase = isVaseWrapping(wrappingType);
+  const vaseHeadDrop =
+    wrappingType === 'vase_teardrop'
+      ? 1.32
+      : wrappingType === 'vase_ribbed'
+      ? 1.38
+      : wrappingType === 'vase_tall'
+      ? 1.08
+      : 0;
+
   if (totalCount === 1) {
+    const headY = 1.85 - vaseHeadDrop;
     // Single flower sitting upright in center
     return {
-      position: [0, 1.85, 0],
+      position: [0, headY, 0],
       rotation: [0.1, 0, 0],
       stemCurvePoints: [
         new THREE.Vector3(0, -1.45, 0),
-        new THREE.Vector3(0, 0.05, 0),
-        new THREE.Vector3(0, 0.95, 0),
-        new THREE.Vector3(0, 1.80, 0),
+        new THREE.Vector3(0, isVase ? -0.15 : 0.05, 0),
+        new THREE.Vector3(0, headY - 0.35, 0),
+        new THREE.Vector3(0, headY - 0.05, 0),
       ],
-      stemLength: 3.25,
+      stemLength: headY + 1.4,
     };
   }
 
@@ -133,8 +145,11 @@ export function calculateBouquetLayout(
   const bottomX = Math.cos(bottomTheta) * bottomSpread;
   const bottomZ = Math.sin(bottomTheta) * bottomSpread;
 
+  // Lower flower heads when placed in a vase so blooms sit naturally above the rim
+  y -= vaseHeadDrop;
+
   // Neck point just below flower head (stays safely inside the collar opening)
-  const neckY = Math.max(1.38, y - 0.22);
+  const neckY = isVase ? Math.max(-0.05, y - 0.18) : Math.max(1.38, y - 0.22);
   const neckX = x * 0.88;
   const neckZ = z * 0.88;
 

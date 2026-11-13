@@ -9,12 +9,14 @@ import { BabysBreathMesh } from './flowers/BabysBreathMesh';
 import { LavenderMesh } from './flowers/LavenderMesh';
 import { JasmineMesh } from './flowers/JasmineMesh';
 import { WrappingMesh } from './WrappingMesh';
+import { VaseMesh } from './VaseMesh';
 import { RibbonMesh } from './RibbonMesh';
 import { GreetingCardMesh } from './GreetingCardMesh';
 
 export const BouquetArrangement: React.FC = () => {
   const flowers = useBouquetStore((state) => state.flowers);
   const scene = useBouquetStore((state) => state.scene);
+  const wrappingType = useBouquetStore((state) => state.wrapping.type);
 
   // Compute 3D Fibonacci spiral offsets for all flowers
   const arrangedFlowers = useMemo(() => {
@@ -26,7 +28,8 @@ export const BouquetArrangement: React.FC = () => {
         scene.arrangementStyle,
         scene.tightness,
         scene.stemSpread,
-        scene.heightVariance
+        scene.heightVariance,
+        wrappingType
       );
       return {
         flower,
@@ -39,6 +42,7 @@ export const BouquetArrangement: React.FC = () => {
     scene.tightness,
     scene.stemSpread,
     scene.heightVariance,
+    wrappingType,
   ]);
 
   return (
@@ -117,8 +121,9 @@ export const BouquetArrangement: React.FC = () => {
         }
       })}
 
-      {/* 2. Wrapping Paper (Newspaper, Kraft, Cellophane, etc.) */}
+      {/* 2. Wrapping Paper or 3D Vase */}
       <WrappingMesh />
+      <VaseMesh />
 
       {/* 3. Ribbon Knot & Streamers */}
       <RibbonMesh />

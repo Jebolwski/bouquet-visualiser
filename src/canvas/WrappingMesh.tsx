@@ -1,6 +1,7 @@
 import React, { useMemo, useEffect, useState } from 'react';
 import * as THREE from 'three';
 import { useBouquetStore } from '@/store/useBouquetStore';
+import { isVaseWrapping } from '@/types';
 import { getNewspaperTexture, getKraftTexture } from '@/utils/textures';
 import { getWrapDimensions, getStemBundleRadius } from '@/utils/math';
 
@@ -150,6 +151,8 @@ export const WrappingMesh: React.FC = () => {
       </group>
     );
   }
+
+  if (isVaseWrapping(wrapping.type)) return null;
 
   // Cellophane Physical Material
   const renderCellophaneMaterial = () => (

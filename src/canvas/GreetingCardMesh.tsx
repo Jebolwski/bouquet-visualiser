@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import * as THREE from 'three';
 import { useBouquetStore } from '@/store/useBouquetStore';
+import { isVaseWrapping } from '@/types';
 import { createCardCanvas } from '@/utils/textures';
 import {
   getWrapDimensions,
@@ -51,6 +52,8 @@ export const GreetingCardMesh: React.FC = () => {
       />
     </mesh>
   );
+
+  if (isVaseWrapping(wrappingType)) return null;
 
   // ------------------------------------------------------------------
   // A) WRAPPED: card pinned flat against the OUTSIDE of the paper cone

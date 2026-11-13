@@ -12,6 +12,7 @@ import {
   LightingPreset,
   ArrangementStyle,
   MAX_TOTAL_STEMS,
+  isVaseWrapping,
 } from '@/types';
 import { FLOWER_DEFINITIONS, BOUQUET_PRESETS } from '@/utils/presets';
 
@@ -48,6 +49,7 @@ interface BouquetState {
   setWrappingAccentColor: (color: string) => void;
   toggleInnerLining: () => void;
   toggleStemWrap: () => void;
+  toggleVaseWater: () => void;
   updateWrapping: (partial: Partial<WrappingSettings>) => void;
 
   // Actions - Ribbon
@@ -202,14 +204,41 @@ export const useBouquetStore = create<BouquetState>((set, get) => {
 
     // Wrapping actions
     setWrappingType: (type) => {
-      set((state) => ({
-        wrapping: {
-          ...state.wrapping,
-          type,
-          roughness: type === 'cellophane' ? 0.08 : type === 'silk' ? 0.4 : 0.85,
-          opacity: type === 'cellophane' ? 0.45 : 1.0,
-        },
-      }));
+      set((state) => {
+        const wasVase = isVaseWrapping(state.wrapping.type);
+        const nowVase = isVaseWrapping(type);
+        let nextColor = state.wrapping.primaryColor;
+        if (nowVase && !wasVase) {
+          nextColor = type === 'vase_ribbed' ? '#d4af37' : '#e6f4f8';
+        } else if (type === 'vase_ribbed' && state.wrapping.primaryColor === '#e6f4f8') {
+          nextColor = '#d4af37';
+        } else if ((type === 'vase_teardrop' || type === 'vase_tall') && state.wrapping.primaryColor === '#d4af37') {
+          nextColor = '#e6f4f8';
+        }
+
+        return {
+          wrapping: {
+            ...state.wrapping,
+            type,
+            primaryColor: nextColor,
+            hasWater: nowVase ? state.wrapping.hasWater ?? true : state.wrapping.hasWater,
+            roughness:
+              type === 'cellophane' || type === 'vase_teardrop' || type === 'vase_tall'
+                ? 0.08
+                : type === 'vase_ribbed'
+                ? 0.25
+                : type === 'silk'
+                ? 0.4
+                : 0.85,
+            opacity:
+              type === 'cellophane'
+                ? 0.45
+                : type === 'vase_teardrop' || type === 'vase_tall'
+                ? 0.35
+                : 1.0,
+          },
+        };
+      });
     },
 
     setNewspaperStyle: (newspaperStyle) => {
@@ -239,6 +268,12 @@ export const useBouquetStore = create<BouquetState>((set, get) => {
     toggleStemWrap: () => {
       set((state) => ({
         wrapping: { ...state.wrapping, hasStemWrap: !state.wrapping.hasStemWrap },
+      }));
+    },
+
+    toggleVaseWater: () => {
+      set((state) => ({
+        wrapping: { ...state.wrapping, hasWater: !(state.wrapping.hasWater ?? true) },
       }));
     },
 
