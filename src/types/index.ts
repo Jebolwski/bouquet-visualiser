@@ -86,10 +86,13 @@ export type LightingPreset =
   | 'golden_hour'
   | 'soft_pastel'
   | 'dramatic_noir'
-  | 'stage_lighting';
+  | 'stage_lighting'
+  | 'sunlight';
 
 export interface SceneSettings {
   lighting: LightingPreset;
+  lightingColor?: string;
+  sunlightIntensity?: number;
   autoRotate: boolean;
   rotationSpeed: number;
   arrangementStyle: ArrangementStyle;

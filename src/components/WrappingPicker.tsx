@@ -30,32 +30,32 @@ export const WrappingPicker: React.FC = () => {
   }[] = [
     {
       type: 'newspaper',
-      title: 'Vintage Gazete',
-      description: '1894 Paris & Londra botanik gravürlü otantik gazete baskısı',
+      title: 'Vintage Newspaper',
+      description: 'Authentic 1894 Paris & London botanical engraving newspaper print',
       icon: <Newspaper className="w-5 h-5 text-amber-700" />,
     },
     {
       type: 'kraft',
       title: 'Artisanal Kraft',
-      description: 'Geri dönüştürülmüş lifli doğal kahve kraft kağıt',
+      description: 'Natural recycled fibrous brown kraft florist paper',
       icon: <Package className="w-5 h-5 text-amber-800" />,
     },
     {
       type: 'cellophane',
-      title: 'Şeffaf Jelatin',
-      description: 'Kristal berraklığında parlak koruyucu çiçekçi jelatini',
+      title: 'Clear Cellophane',
+      description: 'Crystal-clear glossy protective florist wrap',
       icon: <Sparkles className="w-5 h-5 text-sky-500" />,
     },
     {
       type: 'silk',
-      title: 'Pastel İpek / Saten',
-      description: 'Lüks ve yumuşak dokulu pastel kumaş sarımı',
+      title: 'Pastel Silk / Satin',
+      description: 'Luxurious soft-textured pastel fabric wrapping',
       icon: <Feather className="w-5 h-5 text-rose-500" />,
     },
     {
       type: 'none',
-      title: 'Sadece Doğal Rafya',
-      description: 'Ambalajsız, sapları doğal kınnap ile bağlı buket',
+      title: 'Natural Raffia Only',
+      description: 'Unwrapped bouquet with stems tied in natural twine',
       icon: <CircleOff className="w-5 h-5 text-stone-400" />,
     },
   ];
@@ -68,18 +68,18 @@ export const WrappingPicker: React.FC = () => {
   ];
 
   const kraftColors = [
-    { name: 'Orijinal Kraft', hex: '#c8ad8d' },
-    { name: 'Sıcak Karamel', hex: '#9c7c58' },
-    { name: 'Fildişi Krem', hex: '#e8dec8' },
-    { name: 'Koyu Rustik', hex: '#634b35' },
+    { name: 'Original Kraft', hex: '#c8ad8d' },
+    { name: 'Warm Caramel', hex: '#9c7c58' },
+    { name: 'Ivory Cream', hex: '#e8dec8' },
+    { name: 'Dark Rustic', hex: '#634b35' },
   ];
 
   const silkColors = [
-    { name: 'Pudra Pembe', hex: '#e8c5c8' },
-    { name: 'Bebek Mavisi', hex: '#c5dbe8' },
-    { name: 'Adaçayı Yeşili', hex: '#c8dac5' },
-    { name: 'Lavanta Sisi', hex: '#dbc5e8' },
-    { name: 'Kar Beyazı', hex: '#fdfbf7' },
+    { name: 'Blush Pink', hex: '#e8c5c8' },
+    { name: 'Baby Blue', hex: '#c5dbe8' },
+    { name: 'Sage Green', hex: '#c8dac5' },
+    { name: 'Lavender Mist', hex: '#dbc5e8' },
+    { name: 'Snow White', hex: '#fdfbf7' },
   ];
 
   const vaseOptions: {
@@ -89,45 +89,45 @@ export const WrappingPicker: React.FC = () => {
   }[] = [
     {
       type: 'vase_teardrop',
-      title: 'Damla Cam Vazo',
-      description: 'Dar boyunlu, yuvarlak gövdeli şeffaf kristal cam vazo',
+      title: 'Teardrop Glass Vase',
+      description: 'Tapered narrow neck with a rounded crystal-clear belly',
     },
     {
       type: 'vase_ribbed',
-      title: 'Fitilli Metalik Vazo',
-      description: 'Dikey oluklu, sıcak altın ve seramik dokulu dekoratif vazo',
+      title: 'Ribbed Metallic Vase',
+      description: 'Fluted vertical-ribbed urn in warm metallic or ceramic finishes',
     },
     {
       type: 'vase_tall',
-      title: 'Uzun Klasik Cam Vazo',
-      description: 'Zarif kavisli, yüksek gövdeli şeffaf sunum vazosu',
+      title: 'Tall Classic Glass Vase',
+      description: 'Graceful curved tall glass presentation vase',
     },
   ];
 
   const glassVaseColors = [
-    { name: 'Kristal Şeffaf', hex: '#e6f4f8' },
-    { name: 'Dumanlı Gri', hex: '#9aa5b1' },
-    { name: 'Bal Kehribar', hex: '#d99b52' },
-    { name: 'Pudra Cam', hex: '#f2c6cf' },
-    { name: 'Adaçayı Cam', hex: '#a8c6b1' },
+    { name: 'Crystal Clear', hex: '#e6f4f8' },
+    { name: 'Smoked Gray', hex: '#9aa5b1' },
+    { name: 'Honey Amber', hex: '#d99b52' },
+    { name: 'Blush Glass', hex: '#f2c6cf' },
+    { name: 'Sage Glass', hex: '#a8c6b1' },
   ];
 
   const ribbedVaseColors = [
-    { name: 'Altın Varak', hex: '#d4af37' },
-    { name: 'Şampanya Bronz', hex: '#c9a66b' },
-    { name: 'Mat Fildişi', hex: '#f3ede2' },
-    { name: 'Antrasit Metalik', hex: '#3d4048' },
-    { name: 'Pudra Seramik', hex: '#e8c5c8' },
+    { name: 'Antique Gold', hex: '#d4af37' },
+    { name: 'Champagne Bronze', hex: '#c9a66b' },
+    { name: 'Matte Ivory', hex: '#f3ede2' },
+    { name: 'Anthracite Metallic', hex: '#3d4048' },
+    { name: 'Blush Ceramic', hex: '#e8c5c8' },
   ];
 
   const ribbonColors = [
-    { name: 'Altın Varak', hex: '#d4af37' },
-    { name: 'Bordo Kadife', hex: '#590d22' },
-    { name: 'Gece Mavisi', hex: '#1d3557' },
-    { name: 'Zümrüt Yeşili', hex: '#2d6a4f' },
-    { name: 'Pudra Pembe', hex: '#ffb3c1' },
-    { name: 'Kınnap Kahvesi', hex: '#654321' },
-    { name: 'Saf Beyaz', hex: '#ffffff' },
+    { name: 'Gold Foil', hex: '#d4af37' },
+    { name: 'Burgundy Velvet', hex: '#590d22' },
+    { name: 'Midnight Blue', hex: '#1d3557' },
+    { name: 'Emerald Green', hex: '#2d6a4f' },
+    { name: 'Blush Pink', hex: '#ffb3c1' },
+    { name: 'Natural Twine', hex: '#654321' },
+    { name: 'Pure White', hex: '#ffffff' },
   ];
 
   return (
@@ -135,7 +135,7 @@ export const WrappingPicker: React.FC = () => {
       {/* 1. Wrapping Material Selector */}
       <div>
         <h4 className="text-xs uppercase tracking-wider text-stone-500 font-medium mb-3">
-          Ambalaj Kağıdı Türü
+          Wrapping Paper Type
         </h4>
         <div className="grid grid-cols-1 gap-2.5">
           {wrappingOptions.map((opt) => {
@@ -183,7 +183,7 @@ export const WrappingPicker: React.FC = () => {
       {wrapping.type === 'newspaper' && (
         <div className="p-3.5 bg-amber-50/50 dark:bg-amber-950/20 rounded-xl border border-amber-200/60 dark:border-amber-800/40">
           <label className="text-xs font-serif font-bold text-stone-800 dark:text-stone-200 mb-2 block">
-            Gazete Sayı & Başlık Deseni
+            Newspaper Issue &amp; Masthead
           </label>
           <div className="grid grid-cols-2 gap-2">
             {newspaperStyles.map((style) => (
@@ -208,7 +208,7 @@ export const WrappingPicker: React.FC = () => {
       {(wrapping.type === 'kraft' || wrapping.type === 'silk') && (
         <div className="p-3.5 bg-stone-50 dark:bg-stone-800/50 rounded-xl border border-stone-200/60 dark:border-stone-700/60">
           <span className="text-xs font-medium text-stone-700 dark:text-stone-300 mb-2 block">
-            Kağıt Renk Tonu:
+            Paper Color Tone:
           </span>
           <div className="flex gap-2">
             {(wrapping.type === 'kraft' ? kraftColors : silkColors).map((c) => (
@@ -234,7 +234,7 @@ export const WrappingPicker: React.FC = () => {
       {/* 1.5 Vase Options */}
       <div>
         <h4 className="text-xs uppercase tracking-wider text-stone-500 font-medium mb-3">
-          Vazo Seçenekleri
+          Vase Options
         </h4>
         <div className="grid grid-cols-1 gap-2.5">
           {vaseOptions.map((opt) => {
@@ -289,10 +289,10 @@ export const WrappingPicker: React.FC = () => {
               </div>
               <div>
                 <h5 className="text-xs font-medium text-stone-800 dark:text-stone-200">
-                  Vazoda Su
+                  Water in Vase
                 </h5>
                 <p className="text-[11px] text-stone-500">
-                  {(wrapping.hasWater ?? true) ? 'Vazo içinde berrak su dolu' : 'Susuz / kuru vazo'}
+                  {(wrapping.hasWater ?? true) ? 'Filled with clear water' : 'Dry / empty vase'}
                 </p>
               </div>
             </div>
@@ -316,7 +316,7 @@ export const WrappingPicker: React.FC = () => {
           {/* Vase Tint / Finish Color */}
           <div className="p-3.5 bg-white/70 dark:bg-stone-800/70 rounded-xl border border-stone-200/60 dark:border-stone-700/60">
             <h4 className="text-xs uppercase tracking-wider text-stone-500 font-medium mb-2.5">
-              {wrapping.type === 'vase_ribbed' ? 'Vazo Rengi & Dokusu' : 'Cam Tonu'}
+              {wrapping.type === 'vase_ribbed' ? 'Vase Finish & Color' : 'Glass Tint'}
             </h4>
             <div className="flex flex-wrap gap-2.5">
               {(wrapping.type === 'vase_ribbed' ? ribbedVaseColors : glassVaseColors).map((c) => (
@@ -345,10 +345,10 @@ export const WrappingPicker: React.FC = () => {
         <div className="flex items-center justify-between p-3.5 bg-white/70 dark:bg-stone-800/70 rounded-xl border border-stone-200/60 dark:border-stone-700/60">
           <div>
             <h5 className="text-xs font-medium text-stone-800 dark:text-stone-200">
-              İç Astar Pelur Kağıdı
+              Inner Tissue Lining
             </h5>
             <p className="text-[11px] text-stone-500">
-              Üst kenardan taşan ikinci katman dekoratif tül
+              Second decorative tissue layer peeking above the rim
             </p>
           </div>
           <button
@@ -372,10 +372,10 @@ export const WrappingPicker: React.FC = () => {
         <div className="flex items-center justify-between p-3.5 bg-white/70 dark:bg-stone-800/70 rounded-xl border border-stone-200/60 dark:border-stone-700/60">
           <div>
             <h5 className="text-xs font-medium text-stone-800 dark:text-stone-200">
-              Alt Sap Ambalajı (Etek Sarımı)
+              Lower Stem Skirt Wrap
             </h5>
             <p className="text-[11px] text-stone-500">
-              Sapları boydan boya zarifçe saran alt ambalaj eteği
+              Flared lower paper skirt wrapping the bouquet stems
             </p>
           </div>
           <button
@@ -399,14 +399,14 @@ export const WrappingPicker: React.FC = () => {
       <div className="pt-2 border-t border-stone-200/60 dark:border-stone-700/60">
         <div className="flex items-center justify-between mb-3">
           <h4 className="text-xs uppercase tracking-wider text-stone-500 font-medium">
-            Dekoratif Kurdele & Düğüm
+            Decorative Ribbon &amp; Bow
           </h4>
           <button
             type="button"
             onClick={() => toggleRibbon()}
             className="text-xs text-rose-600 dark:text-rose-400 font-medium hover:underline"
           >
-            {ribbon.enabled ? 'Kurdeleyi Kaldır' : 'Kurdele Ekle'}
+            {ribbon.enabled ? 'Remove Ribbon' : 'Add Ribbon'}
           </button>
         </div>
 
@@ -425,14 +425,14 @@ export const WrappingPicker: React.FC = () => {
                       : 'text-stone-600 dark:text-stone-400 hover:text-stone-900'
                   }`}
                 >
-                  {st === 'satin' ? 'Saten' : st === 'velvet' ? 'Kadife' : 'Kınnap İp'}
+                  {st === 'satin' ? 'Satin' : st === 'velvet' ? 'Velvet' : 'Twine'}
                 </button>
               ))}
             </div>
 
             {/* Color Swatches */}
             <div>
-              <span className="text-[11px] text-stone-500 block mb-1.5">Kurdele Rengi:</span>
+              <span className="text-[11px] text-stone-500 block mb-1.5">Ribbon Color:</span>
               <div className="flex flex-wrap gap-2">
                 {ribbonColors.map((rc) => (
                   <button
@@ -462,7 +462,7 @@ export const WrappingPicker: React.FC = () => {
             {/* Bow Size Slider */}
             <div>
               <div className="flex justify-between text-[11px] text-stone-500 mb-1">
-                <span>Düğüm Büyüklüğü:</span>
+                <span>Bow Size:</span>
                 <span>{ribbon.bowSize.toFixed(1)}x</span>
               </div>
               <input

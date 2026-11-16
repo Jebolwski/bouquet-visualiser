@@ -20,11 +20,11 @@ export const ControlPanel: React.FC = () => {
     label: string;
     icon: React.ReactNode;
   }[] = [
-    { id: 'flowers', label: 'Çiçekler', icon: <Flower className="w-4 h-4" /> },
-    { id: 'wrapping', label: 'Ambalaj', icon: <Package className="w-4 h-4" /> },
-    { id: 'card', label: 'Mesaj Kartı', icon: <Mail className="w-4 h-4" /> },
-    { id: 'presets', label: 'Koleksiyon', icon: <Sparkles className="w-4 h-4" /> },
-    { id: 'environment', label: 'Dizilim', icon: <Sliders className="w-4 h-4" /> },
+    { id: 'flowers', label: 'Flowers', icon: <Flower className="w-4 h-4" /> },
+    { id: 'wrapping', label: 'Wrapping', icon: <Package className="w-4 h-4" /> },
+    { id: 'card', label: 'Card', icon: <Mail className="w-4 h-4" /> },
+    { id: 'presets', label: 'Collections', icon: <Sparkles className="w-4 h-4" /> },
+    { id: 'environment', label: 'Layout', icon: <Sliders className="w-4 h-4" /> },
   ];
 
   const totalStems = getTotalStems();
@@ -40,6 +40,7 @@ export const ControlPanel: React.FC = () => {
               <button
                 key={tab.id}
                 type="button"
+                data-tour={`tab-${tab.id}`}
                 onClick={() => setActiveTab(tab.id)}
                 className={`flex flex-col items-center justify-center gap-1 py-2 px-1 rounded-lg text-[11px] font-medium transition-all duration-200 ${
                   isActive
@@ -69,20 +70,20 @@ export const ControlPanel: React.FC = () => {
         <div className="flex items-center justify-between mb-3">
           <div>
             <span className="text-[11px] uppercase tracking-wider text-stone-400 block font-medium">
-              Buketiniz
+              Your Bouquet
             </span>
             <div className="flex items-baseline gap-1.5">
               <span className="text-2xl font-serif font-bold text-stone-900 dark:text-stone-50">
                 {totalStems}
               </span>
               <span className="text-xs text-stone-500">
-                dal çiçek
+                stems
               </span>
             </div>
           </div>
 
           <span className="text-xs px-2.5 py-1 rounded-full bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 font-medium">
-            Taze & Canlı
+            Fresh &amp; Vivid
           </span>
         </div>
 
@@ -93,7 +94,7 @@ export const ControlPanel: React.FC = () => {
           className="w-full flex items-center justify-center gap-2.5 py-3.5 px-4 bg-gradient-to-r from-rose-500 via-rose-600 to-rose-700 hover:from-rose-600 hover:to-rose-800 text-white font-medium rounded-xl shadow-lg shadow-rose-500/25 transition-all duration-200 transform active:scale-[0.99] group"
         >
           <Sparkles className="w-4 h-4 transition-transform group-hover:scale-110" />
-          <span className="text-sm tracking-wide">Buketi Tamamla / Link Paylaş</span>
+          <span className="text-sm tracking-wide">Complete Bouquet / Share Link</span>
         </button>
       </div>
     </aside>

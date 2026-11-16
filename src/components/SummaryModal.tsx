@@ -79,20 +79,20 @@ export const SummaryModal: React.FC = () => {
             <Sparkles className="w-6 h-6" />
           </div>
           <span className="text-xs uppercase tracking-widest text-rose-500 font-bold">
-            Özel Tasarım Özeti
+            Custom Design Summary
           </span>
           <h3 className="font-serif font-bold text-2xl text-stone-900 dark:text-stone-50 mt-1">
-            Buketiniz Hazır!
+            Your Bouquet is Ready!
           </h3>
           <p className="text-xs text-stone-500 mt-1">
-            Tasarımınızı link olarak paylaşabilir veya fotoğrafını indirebilirsiniz
+            Share your design via link or download a high-resolution snapshot
           </p>
         </div>
 
         {/* Bouquet Contents */}
         <div className="p-4 bg-stone-50 dark:bg-stone-800/50 rounded-2xl border border-stone-200/60 dark:border-stone-700/60 mb-5">
           <h4 className="text-xs font-semibold text-stone-500 uppercase tracking-wider mb-3">
-            Buket İçeriği ({flowers.length} Dal)
+            Bouquet Contents ({flowers.length} Stems)
           </h4>
 
           <div className="divide-y divide-stone-200/60 dark:divide-stone-700/60">
@@ -115,22 +115,22 @@ export const SummaryModal: React.FC = () => {
             <div className="py-2.5 flex items-center gap-2 text-xs text-stone-800 dark:text-stone-200">
               <Package className="w-3.5 h-3.5 text-amber-700" />
               <span>
-                Ambalaj:{' '}
+                Packaging:{' '}
                 {wrapping.type === 'newspaper'
-                  ? 'Vintage Gazete (1894)'
+                  ? 'Vintage Newspaper (1894)'
                   : wrapping.type === 'kraft'
                   ? 'Artisanal Kraft'
                   : wrapping.type === 'cellophane'
-                  ? 'Şeffaf Jelatin'
+                  ? 'Clear Cellophane'
                   : wrapping.type === 'silk'
-                  ? 'Pastel İpek'
+                  ? 'Pastel Silk'
                   : wrapping.type === 'vase_teardrop'
-                  ? `Damla Cam Vazo (${(wrapping.hasWater ?? true) ? 'Sulu' : 'Susuz'})`
+                  ? `Teardrop Glass Vase (${(wrapping.hasWater ?? true) ? 'With Water' : 'Dry'})`
                   : wrapping.type === 'vase_ribbed'
-                  ? `Fitilli Metalik Vazo (${(wrapping.hasWater ?? true) ? 'Sulu' : 'Susuz'})`
+                  ? `Ribbed Metallic Vase (${(wrapping.hasWater ?? true) ? 'With Water' : 'Dry'})`
                   : wrapping.type === 'vase_tall'
-                  ? `Uzun Klasik Cam Vazo (${(wrapping.hasWater ?? true) ? 'Sulu' : 'Susuz'})`
-                  : 'Doğal Rafya'}
+                  ? `Tall Classic Glass Vase (${(wrapping.hasWater ?? true) ? 'With Water' : 'Dry'})`
+                  : 'Natural Raffia'}
               </span>
             </div>
 
@@ -139,7 +139,7 @@ export const SummaryModal: React.FC = () => {
               <div className="py-2.5 flex items-center gap-2 text-xs text-stone-800 dark:text-stone-200">
                 <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: ribbon.color }} />
                 <span>
-                  Kurdele Düğümü ({ribbon.style === 'satin' ? 'Saten' : ribbon.style === 'velvet' ? 'Kadife' : 'Kınnap'})
+                  Ribbon Bow ({ribbon.style === 'satin' ? 'Satin' : ribbon.style === 'velvet' ? 'Velvet' : 'Twine'})
                 </span>
               </div>
             )}
@@ -148,7 +148,7 @@ export const SummaryModal: React.FC = () => {
             {card.enabled && (
               <div className="py-2.5 flex items-center gap-2 text-xs text-stone-800 dark:text-stone-200">
                 <Mail className="w-3.5 h-3.5 text-rose-500" />
-                <span>Kişiye Özel Mesaj Kartı</span>
+                <span>Personalized Greeting Card</span>
               </div>
             )}
           </div>
@@ -158,10 +158,10 @@ export const SummaryModal: React.FC = () => {
         {card.enabled && (
           <div className="p-4 bg-amber-50/50 dark:bg-stone-800/80 rounded-2xl border border-amber-200/60 dark:border-stone-700 mb-5 text-center">
             <p className="text-xs italic text-stone-500 mb-1">
-              {card.to ? `Sevgili ${card.to},` : 'Kime,'}
+              {card.to ? `Dear ${card.to},` : 'To,'}
             </p>
             <p className="text-sm font-serif font-medium text-stone-800 dark:text-stone-200 px-4">
-              &quot;{card.message || 'Özel notunuz burada yer alacak...'}&quot;
+              &quot;{card.message || 'Your special note will appear here...'}&quot;
             </p>
             {card.from && <p className="text-xs italic text-stone-500 mt-1">— {card.from}</p>}
           </div>
@@ -175,7 +175,7 @@ export const SummaryModal: React.FC = () => {
             className="w-full flex items-center justify-center gap-2 py-3.5 px-4 rounded-xl bg-gradient-to-r from-rose-500 to-rose-600 hover:from-rose-600 hover:to-rose-700 text-white text-sm font-semibold shadow-md shadow-rose-500/20 transition-all"
           >
             {copiedLink ? <Check className="w-4 h-4" /> : <Share2 className="w-4 h-4" />}
-            <span>{copiedLink ? 'Bağlantı Panoya Kopyalandı!' : 'Buket Linkini Kopyala / Paylaş'}</span>
+            <span>{copiedLink ? 'Link Copied to Clipboard!' : 'Copy Bouquet Link / Share'}</span>
           </button>
 
           <button
@@ -184,7 +184,7 @@ export const SummaryModal: React.FC = () => {
             className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-stone-800 dark:text-stone-200 hover:bg-stone-100 dark:hover:bg-stone-700 text-xs font-semibold transition-colors"
           >
             <Camera className="w-4 h-4 text-rose-500" />
-            <span>3D Buket Fotoğrafını İndir (.PNG)</span>
+            <span>Download 3D Bouquet Photo (.PNG)</span>
           </button>
         </div>
       </div>

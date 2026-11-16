@@ -6,6 +6,7 @@ import { Header } from '@/components/Header';
 import { ControlPanel } from '@/components/ControlPanel';
 import { ViewportControls } from '@/components/ViewportControls';
 import { SummaryModal } from '@/components/SummaryModal';
+import { TutorialOverlay } from '@/components/TutorialOverlay';
 import { useBouquetStore } from '@/store/useBouquetStore';
 import { Loader2, SlidersHorizontal, ChevronRight, X } from 'lucide-react';
 
@@ -17,7 +18,7 @@ const BouquetCanvas = dynamic(
     loading: () => (
       <div className="w-full h-full flex flex-col items-center justify-center gap-3 bg-stone-50 text-stone-500">
         <Loader2 className="w-8 h-8 animate-spin text-rose-500" />
-        <p className="text-xs uppercase tracking-widest font-medium">3D Stüdyo Yükleniyor...</p>
+        <p className="text-xs uppercase tracking-widest font-medium">Loading 3D Studio...</p>
       </div>
     ),
   }
@@ -39,6 +40,18 @@ export default function Home() {
     }
   }, [loadFromShareableData]);
 
+  // Open/close mobile drawer from collection selection or onboarding tutorial
+  useEffect(() => {
+    const onOpenMobilePanel = () => setMobilePanelOpen(true);
+    const onCloseMobilePanel = () => setMobilePanelOpen(false);
+    window.addEventListener('bouquet-open-mobile-panel', onOpenMobilePanel);
+    window.addEventListener('bouquet-close-mobile-panel', onCloseMobilePanel);
+    return () => {
+      window.removeEventListener('bouquet-open-mobile-panel', onOpenMobilePanel);
+      window.removeEventListener('bouquet-close-mobile-panel', onCloseMobilePanel);
+    };
+  }, []);
+
   return (
     <div className="flex flex-col h-screen w-screen overflow-hidden bg-radial-gradient">
       {/* 1. Header Bar */}
@@ -48,6 +61,7 @@ export default function Home() {
       <main className="relative flex-1 flex overflow-hidden">
         {/* Left: 3D WebGL Canvas Area */}
         <section
+          data-tour="canvas"
           className="relative flex-1 h-full overflow-hidden bg-transparent transition-colors duration-500"
           style={
             lighting === 'dramatic_noir'
@@ -60,6 +74,16 @@ export default function Home() {
                   background:
                     'radial-gradient(circle at 50% 82%, #231d2b 0%, #111018 52%, #050508 100%)',
                 }
+              : lighting === 'sunlight'
+              ? {
+                  background:
+                    'linear-gradient(180deg, #4b8fd1 0%, #8bc0eb 44%, #dcedf9 82%, #f5efe3 100%)',
+                }
+              : lighting === 'golden_hour'
+              ? {
+                  background:
+                    'linear-gradient(180deg, #392c54 0%, #8c4866 36%, #e68a5c 72%, #ffd49e 100%)',
+                }
               : undefined
           }
         >
@@ -69,11 +93,12 @@ export default function Home() {
           {/* Mobile Toggle Button for Control Panel */}
           <button
             type="button"
+            data-tour="mobile-panel-btn"
             onClick={() => setMobilePanelOpen(true)}
             className="md:hidden absolute top-4 right-4 z-20 flex items-center gap-2 px-3.5 py-2 rounded-xl bg-white/90 dark:bg-stone-900/90 backdrop-blur-md shadow-glass border border-stone-200 text-xs font-semibold text-stone-800 dark:text-stone-100"
           >
             <SlidersHorizontal className="w-4 h-4 text-rose-500" />
-            <span>Tasarım Paneli</span>
+            <span>Design Panel</span>
           </button>
         </section>
 
@@ -87,7 +112,7 @@ export default function Home() {
           <div className="md:hidden fixed inset-0 z-40 flex flex-col bg-white dark:bg-stone-900 animate-fade-in">
             <div className="flex items-center justify-between p-4 border-b border-stone-200 dark:border-stone-800">
               <span className="font-serif font-bold text-base text-stone-900 dark:text-stone-100">
-                Buket Özelleştirme
+                Customize Bouquet
               </span>
               <button
                 type="button"
@@ -106,6 +131,9 @@ export default function Home() {
 
       {/* 3. Summary & Share Modal */}
       <SummaryModal />
+
+      {/* 4. First-Time Visitor Guided Tutorial */}
+      <TutorialOverlay />
     </div>
   );
 }

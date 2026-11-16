@@ -10,6 +10,186 @@ const LED_POS = new THREE.Vector3(1.55, 3.25, 1.35);
 const LED_TARGET_WRAP = new THREE.Vector3(0, 0.85, 0);
 const LED_TARGET_VASE = new THREE.Vector3(0, 0.0, 0);
 
+const SUN_SKY_POS = new THREE.Vector3(4.8, 5.4, -8.8);
+const SUNSET_SKY_POS = new THREE.Vector3(5.6, 1.5, -9.8);
+
+/**
+ * Full-360° procedural HD sky dome with atmospheric scattering, radiant sun,
+ * and multi-octave billowy cumulus + wispy cirrus clouds (zero plane-edge clipping).
+ */
+const AtmosphericSkyDome: React.FC<{
+  mode: 'sunlight' | 'sunset';
+  sunPosition: THREE.Vector3;
+  sunIntensity?: number;
+}> = ({ mode, sunPosition, sunIntensity = 1.25 }) => {
+  const material = useMemo(() => {
+    const isSunset = mode === 'sunset';
+    const sunDir = sunPosition.clone().normalize();
+
+    return new THREE.ShaderMaterial({
+      side: THREE.BackSide,
+      depthWrite: false,
+      uniforms: {
+        uSunDir: { value: sunDir },
+        uTime: { value: 0 },
+        uIsSunset: { value: isSunset ? 1.0 : 0.0 },
+        uSunIntensity: { value: sunIntensity },
+      },
+      vertexShader: `
+        varying vec3 vWorldDir;
+        void main() {
+          vWorldDir = normalize(position);
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        }
+      `,
+      fragmentShader: `
+        uniform vec3 uSunDir;
+        uniform float uTime;
+        uniform float uIsSunset;
+        uniform float uSunIntensity;
+        varying vec3 vWorldDir;
+
+        float hash(vec2 p) {
+          return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453123);
+        }
+
+        float noise(vec2 p) {
+          vec2 i = floor(p);
+          vec2 f = fract(p);
+          vec2 u = f * f * (3.0 - 2.0 * f);
+          return mix(
+            mix(hash(i + vec2(0.0, 0.0)), hash(i + vec2(1.0, 0.0)), u.x),
+            mix(hash(i + vec2(0.0, 1.0)), hash(i + vec2(1.0, 1.0)), u.x),
+            u.y
+          );
+        }
+
+        float fbm7(vec2 p) {
+          float v = 0.0;
+          float a = 0.5;
+          mat2 rot = mat2(0.8, 0.6, -0.6, 0.8);
+          for (int i = 0; i < 7; i++) {
+            v += a * noise(p);
+            p = rot * p * 2.03 + vec2(13.1, 7.7);
+            a *= 0.5;
+          }
+          return v;
+        }
+
+        float billowyCloud(vec2 p) {
+          float n = fbm7(p);
+          float detail = fbm7(p * 2.6 + vec2(4.2, -3.1));
+          // Cauliflower cumulus lobes
+          float lobe = 1.0 - abs(detail * 2.0 - 1.0);
+          return n * 0.72 + lobe * 0.28;
+        }
+
+        void main() {
+          vec3 dir = normalize(vWorldDir);
+          float h = clamp(dir.y, -0.15, 1.0);
+          float sunDot = max(0.0, dot(dir, normalize(uSunDir)));
+
+          // 1. Sky Gradient (Daylight vs Realistic Sunset)
+          vec3 skyCol;
+          if (uIsSunset > 0.5) {
+            vec3 zenith = vec3(0.22, 0.21, 0.38);     // Deep twilight periwinkle
+            vec3 midSky = vec3(0.76, 0.36, 0.49);     // Dusty rose-magenta
+            vec3 horizon = vec3(0.98, 0.57, 0.36);    // Glowing coral-amber
+            vec3 sunHorizon = vec3(1.0, 0.82, 0.44);  // Golden horizon band
+
+            skyCol = mix(horizon, midSky, smoothstep(0.0, 0.34, h));
+            skyCol = mix(skyCol, zenith, smoothstep(0.25, 0.85, h));
+            // Warm horizontal glow near the setting sun
+            skyCol = mix(skyCol, sunHorizon, pow(sunDot, 4.0) * smoothstep(0.45, -0.05, h) * 0.75);
+          } else {
+            vec3 zenith = vec3(0.16, 0.42, 0.76);     // Rich cerulean blue
+            vec3 midSky = vec3(0.44, 0.70, 0.93);     // Clear sky blue
+            vec3 horizon = vec3(0.86, 0.93, 0.98);    // Soft sunlit mist
+
+            skyCol = mix(horizon, midSky, smoothstep(0.0, 0.28, h));
+            skyCol = mix(skyCol, zenith, smoothstep(0.22, 0.85, h));
+          }
+
+          // 2. Radiant Atmospheric Sun
+          float sunCore = smoothstep(0.9990, 0.99975, sunDot);
+          float sunInner = pow(sunDot, 90.0);
+          float sunCorona = pow(sunDot, 9.0);
+          vec3 sunTint = uIsSunset > 0.5 ? vec3(1.0, 0.62, 0.25) : vec3(1.0, 0.92, 0.68);
+          vec3 sunCoreCol = uIsSunset > 0.5 ? vec3(1.0, 0.94, 0.74) : vec3(1.0, 0.99, 0.95);
+          float sunBoost = uIsSunset > 0.5 ? 1.0 : clamp(0.65 + uSunIntensity * 0.35, 0.5, 1.4);
+
+          skyCol += sunTint * sunCorona * (uIsSunset > 0.5 ? 0.55 : 0.28) * sunBoost;
+          skyCol += sunCoreCol * sunInner * 0.85 * sunBoost;
+          skyCol = mix(skyCol, sunCoreCol * 1.15, sunCore);
+
+          // 3. HD Multi-Octave Clouds (continuous spherical projection, zero edges)
+          float horizonMask = smoothstep(-0.02, 0.16, dir.y);
+          if (horizonMask > 0.005) {
+            vec2 proj = dir.xz / (max(0.08, dir.y + 0.12));
+            vec2 drift = vec2(uTime * 0.012, uTime * 0.004);
+
+            if (uIsSunset > 0.5) {
+              // Sunset: wispy horizontal cirrus + mid-altitude coral/gold clouds
+              vec2 p1 = proj * vec2(0.75, 1.95) + drift + vec2(2.4, 1.1);
+              vec2 p2 = proj * vec2(1.4, 2.8) + drift * 1.4 + vec2(-3.1, 4.2);
+              float c1 = billowyCloud(p1);
+              float c2 = fbm7(p2);
+              float density = smoothstep(0.46, 0.76, c1 * 0.7 + c2 * 0.35) * horizonMask;
+
+              // Self-shadowing toward sunset sun
+              float cShadow = billowyCloud(p1 + normalize(uSunDir.xz) * 0.09);
+              float lit = clamp((c1 - cShadow) * 4.5 + 0.55, 0.0, 1.0);
+              float sunNear = pow(sunDot, 5.0);
+
+              vec3 darkCloud = vec3(0.42, 0.26, 0.42);   // Deep twilight violet-mauve
+              vec3 coralCloud = vec3(0.98, 0.50, 0.48);  // Glowing pink-coral underlit
+              vec3 goldEdge = vec3(1.0, 0.84, 0.48);     // Fiery gold rim near sun
+
+              vec3 cloudCol = mix(darkCloud, coralCloud, lit * 0.85 + 0.15);
+              cloudCol = mix(cloudCol, goldEdge, clamp(lit * sunNear * 1.3 + sunNear * 0.45, 0.0, 1.0));
+              skyCol = mix(skyCol, cloudCol, density * 0.86);
+            } else {
+              // Daylight: crisp HD cumulus clouds with sunlit tops & shaded bottoms
+              vec2 p1 = proj * 0.85 + drift + vec2(1.7, -2.3);
+              float c1 = billowyCloud(p1);
+              float density = smoothstep(0.50, 0.74, c1) * horizonMask;
+
+              // Directional sun self-shadowing inside the cloud
+              float cShadow = billowyCloud(p1 + normalize(uSunDir.xz) * 0.10);
+              float lit = clamp((c1 - cShadow) * 5.2 + 0.58, 0.0, 1.0);
+              float silverLining = pow(sunDot, 10.0) * 0.45;
+
+              vec3 shadowCol = vec3(0.68, 0.76, 0.86);   // Soft cool cumulus underside
+              vec3 litCol = vec3(1.0, 0.995, 0.98);      // Crisp sunlit white
+              vec3 cloudCol = mix(shadowCol, litCol, lit);
+              cloudCol += vec3(1.0, 0.96, 0.86) * silverLining;
+
+              skyCol = mix(skyCol, cloudCol, density * 0.94);
+            }
+          }
+
+          gl_FragColor = vec4(skyCol, 1.0);
+        }
+      `,
+    });
+  }, [mode, sunPosition, sunIntensity]);
+
+  useEffect(() => {
+    return () => material.dispose();
+  }, [material]);
+
+  useFrame(({ clock }) => {
+    material.uniforms.uTime.value = clock.getElapsedTime();
+  });
+
+  return (
+    <mesh renderOrder={-10}>
+      <sphereGeometry args={[42, 48, 32]} />
+      <primitive object={material} attach="material" />
+    </mesh>
+  );
+};
+
 const STAGE_LEFT_POS = new THREE.Vector3(-2.85, -1.76, 0);
 const STAGE_RIGHT_POS = new THREE.Vector3(2.85, -1.76, 0);
 const STAGE_TARGET_WRAP = new THREE.Vector3(0, 0.95, 0);
@@ -338,13 +518,16 @@ const AimedSpotlightWithBeam: React.FC<AimedSpotlightWithBeamProps> = ({
   );
 };
 
-const NoirLedSpotlight: React.FC<{ isVase: boolean }> = ({ isVase }) => (
+const NoirLedSpotlight: React.FC<{ isVase: boolean; color: string }> = ({
+  isVase,
+  color,
+}) => (
   <>
     <AimedSpotlightWithBeam
       position={LED_POS}
       target={isVase ? LED_TARGET_VASE : LED_TARGET_WRAP}
-      color="#f8fbff"
-      beamColor="#eef4ff"
+      color={color}
+      beamColor={color}
       intensity={38}
       angle={0.44}
       penumbra={0.55}
@@ -353,22 +536,29 @@ const NoirLedSpotlight: React.FC<{ isVase: boolean }> = ({ isVase }) => (
       fixtureType="ceiling"
     />
     {/* Overhead LED fill so top of petals & leaves catch crisp light */}
-    <directionalLight position={[1.2, 7.0, 1.6]} intensity={1.55} color="#f5f8ff" />
+    <directionalLight position={[1.2, 7.0, 1.6]} intensity={1.55} color={color} />
   </>
 );
 
 /**
  * Dual bottom-left and bottom-right spotlights shining diagonally upward onto the bouquet.
  */
-const StageLightingRig: React.FC<{ isVase: boolean }> = ({ isVase }) => {
+const StageLightingRig: React.FC<{ isVase: boolean; color?: string }> = ({
+  isVase,
+  color,
+}) => {
   const stageTarget = isVase ? STAGE_TARGET_VASE : STAGE_TARGET_WRAP;
+  const leftColor = color || '#fff2dc';
+  const rightColor = color || '#eef6ff';
+  const leftBeam = color || '#ffe8c8';
+  const rightBeam = color || '#dcebff';
   return (
     <>
       <AimedSpotlightWithBeam
         position={STAGE_LEFT_POS}
         target={stageTarget}
-        color="#fff2dc"
-        beamColor="#ffe8c8"
+        color={leftColor}
+        beamColor={leftBeam}
         intensity={38}
         angle={0.44}
         penumbra={0.58}
@@ -379,8 +569,8 @@ const StageLightingRig: React.FC<{ isVase: boolean }> = ({ isVase }) => {
       <AimedSpotlightWithBeam
         position={STAGE_RIGHT_POS}
         target={stageTarget}
-        color="#eef6ff"
-        beamColor="#dcebff"
+        color={rightColor}
+        beamColor={rightBeam}
         intensity={38}
         angle={0.44}
         penumbra={0.58}
@@ -411,6 +601,8 @@ export const CharacterScene: React.FC = () => {
 
   // Lighting parameters based on preset
   const lighting = sceneSettings.lighting;
+  const lightingColor = sceneSettings.lightingColor || '#f8fbff';
+  const sunIntensity = sceneSettings.sunlightIntensity ?? 1.25;
 
   return (
     <>
@@ -438,17 +630,47 @@ export const CharacterScene: React.FC = () => {
         </>
       )}
 
+      {lighting === 'sunlight' && (
+        <>
+          <ambientLight intensity={0.55 * sunIntensity} color="#fff7e2" />
+          <hemisphereLight args={['#dff0ff', '#dfd2be', 0.65 * sunIntensity]} />
+
+          {/* HD Sky Dome with Radiant Sun & Multi-Octave Cumulus Clouds */}
+          <AtmosphericSkyDome mode="sunlight" sunPosition={SUN_SKY_POS} sunIntensity={sunIntensity} />
+
+          {/* Diagonal overhead sunlight key light aligned with the visible 3D sun */}
+          <directionalLight
+            position={[SUN_SKY_POS.x, SUN_SKY_POS.y, SUN_SKY_POS.z]}
+            intensity={2.4 * sunIntensity}
+            color="#fff0cc"
+            castShadow
+            shadow-mapSize={[2048, 2048]}
+            shadow-bias={-0.0001}
+            shadow-camera-near={0.5}
+            shadow-camera-far={25}
+            shadow-camera-left={-4}
+            shadow-camera-right={4}
+            shadow-camera-top={4}
+            shadow-camera-bottom={-4}
+          />
+
+          {/* Soft sky bounce fill from opposite side so front petals stay luminous */}
+          <directionalLight position={[-4.5, 3.2, 6.5]} intensity={0.75 * sunIntensity} color="#d8ecff" />
+        </>
+      )}
+
       {lighting === 'golden_hour' && (
         <>
           <ambientLight intensity={0.65} color="#ffd8be" />
+          <AtmosphericSkyDome mode="sunset" sunPosition={SUNSET_SKY_POS} />
           <directionalLight
-            position={[6, 5, 4]}
+            position={[SUNSET_SKY_POS.x, SUNSET_SKY_POS.y, SUNSET_SKY_POS.z]}
             intensity={2.2}
             color="#ffaa5e"
             castShadow
             shadow-mapSize={[2048, 2048]}
           />
-          <directionalLight position={[-5, 3, -4]} intensity={0.8} color="#9d4edd" />
+          <directionalLight position={[-5, 3, 4]} intensity={0.85} color="#9d4edd" />
           <pointLight position={[0, 4, 2]} intensity={0.8} color="#ffbe0b" />
         </>
       )}
@@ -473,7 +695,7 @@ export const CharacterScene: React.FC = () => {
           <ambientLight intensity={0.28} color="#9aa8c7" />
 
           {/* Angled Overhead LED Spotlight + subtle volumetric beam */}
-          <NoirLedSpotlight isVase={isVase} />
+          <NoirLedSpotlight isVase={isVase} color={lightingColor} />
 
           {/* Crisp cool LED rim/backlight tracing petal and paper silhouettes */}
           <directionalLight
@@ -497,7 +719,7 @@ export const CharacterScene: React.FC = () => {
           <ambientLight intensity={0.22} color="#a0a8c0" />
 
           {/* Two bottom-left & bottom-right spotlights shining diagonally upward onto the flowers */}
-          <StageLightingRig isVase={isVase} />
+          <StageLightingRig isVase={isVase} color={sceneSettings.lightingColor} />
 
           {/* Subtle top-back rim light to separate flower silhouettes from dark backdrop */}
           <directionalLight

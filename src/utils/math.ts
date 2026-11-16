@@ -139,8 +139,14 @@ export function calculateBouquetLayout(
   const waistZ = Math.sin(waistAngle) * waistSpiralRadius;
 
   // Bottom stem cut end (Dutch spiral flare)
+  // Clamp spread so stems stay neatly inside vases and inside the lower paper skirt
   const bottomY = -1.45;
-  const bottomSpread = (0.20 + normalizedRadius * 0.24) * stemSpread;
+  const rawBottomSpread = (0.20 + normalizedRadius * 0.24) * stemSpread;
+  const maxVaseBottomSpread =
+    wrappingType === 'vase_teardrop' ? 0.34 : 0.30;
+  const bottomSpread = isVase
+    ? Math.min(rawBottomSpread * 0.72, maxVaseBottomSpread)
+    : rawBottomSpread;
   const bottomTheta = arrangementStyle === 'fan' ? theta + Math.PI : theta + Math.PI * 0.85;
   const bottomX = Math.cos(bottomTheta) * bottomSpread;
   const bottomZ = Math.sin(bottomTheta) * bottomSpread;
@@ -242,10 +248,10 @@ export function getWrapDimensions(
   // Top rim hugs the outer flower/foliage perimeter at y = 1.40 without leaving an empty bowl gap
   const topRadius = Math.max(0.48, maxFlowerRadius * 0.85 + 0.23);
 
-  // Lower skirt adapts to stem spread
+  // Lower skirt adapts to stem spread and always stays wider than max bottomSpread (0.44 * stemSpread)
   const skirtBottomRadius = Math.max(
-    0.32,
-    0.26 + stemSpread * 0.14 + Math.sqrt(totalStems) * 0.02
+    0.34,
+    0.44 * stemSpread + 0.08 + Math.sqrt(totalStems) * 0.012
   );
 
   return {

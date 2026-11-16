@@ -15,6 +15,7 @@ import {
   isVaseWrapping,
 } from '@/types';
 import { FLOWER_DEFINITIONS, BOUQUET_PRESETS } from '@/utils/presets';
+import { encodeCompactBouquet, decodeShareableBouquet } from '@/utils/shareCodec';
 
 interface BouquetState {
   // Flower stems list
@@ -414,45 +415,51 @@ export const useBouquetStore = create<BouquetState>((set, get) => {
         flowerSummary[key].count++;
       });
 
-      const exportObj = {
-        f: Object.values(flowerSummary),
-        w: state.wrapping,
-        r: state.ribbon,
-        c: state.card,
-        s: state.scene,
-      };
-
+      const defaults = BOUQUET_PRESETS[0];
       try {
-        return btoa(unescape(encodeURIComponent(JSON.stringify(exportObj))));
-      } catch (e) {
+        return encodeCompactBouquet({
+          flowers: Object.values(flowerSummary),
+          wrapping: state.wrapping,
+          ribbon: state.ribbon,
+          card: state.card,
+          scene: state.scene,
+          defaults: {
+            wrapping: defaults.wrapping,
+            ribbon: defaults.ribbon,
+            card: defaults.card,
+            scene: defaults.scene,
+          },
+        });
+      } catch {
         return '';
       }
     },
 
     loadFromShareableData: (encoded) => {
-      try {
-        const decoded = JSON.parse(decodeURIComponent(escape(atob(encoded))));
-        if (!decoded || !decoded.f) return false;
+      const defaults = BOUQUET_PRESETS[0];
+      const decoded = decodeShareableBouquet(encoded, {
+        wrapping: defaults.wrapping,
+        ribbon: defaults.ribbon,
+        card: defaults.card,
+        scene: defaults.scene,
+      });
+      if (!decoded) return false;
 
-        const importedFlowers: BouquetItem[] = [];
-        decoded.f.forEach((item: { type: FlowerType; count: number; color: string }) => {
-          for (let i = 0; i < item.count; i++) {
-            importedFlowers.push(createStem(item.type, item.color));
-          }
-        });
+      const importedFlowers: BouquetItem[] = [];
+      decoded.flowers.forEach((item) => {
+        for (let i = 0; i < item.count; i++) {
+          importedFlowers.push(createStem(item.type, item.color));
+        }
+      });
 
-        set({
-          flowers: importedFlowers,
-          wrapping: decoded.w || get().wrapping,
-          ribbon: decoded.r || get().ribbon,
-          card: decoded.c || get().card,
-          scene: decoded.s || get().scene,
-        });
-        return true;
-      } catch (err) {
-        console.error('Failed to import bouquet data:', err);
-        return false;
-      }
+      set({
+        flowers: importedFlowers,
+        wrapping: decoded.wrapping,
+        ribbon: decoded.ribbon,
+        card: decoded.card,
+        scene: decoded.scene,
+      });
+      return true;
     },
   };
 });

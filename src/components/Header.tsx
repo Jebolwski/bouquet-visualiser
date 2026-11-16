@@ -4,14 +4,14 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useBouquetStore } from '@/store/useBouquetStore';
 import { BOUQUET_PRESETS } from '@/utils/presets';
 import { SeasonCategory } from '@/types';
-import { Sparkles, Flower, ChevronDown } from 'lucide-react';
+import { Sparkles, Flower, ChevronDown, HelpCircle, Sun, Moon } from 'lucide-react';
 
 const SEASON_GROUPS: { id: SeasonCategory; label: string; emoji: string; accent: string }[] = [
-  { id: 'spring', label: 'İlkbahar', emoji: '🌸', accent: 'text-pink-600 dark:text-pink-400' },
-  { id: 'summer', label: 'Yaz', emoji: '☀️', accent: 'text-amber-600 dark:text-amber-400' },
-  { id: 'autumn', label: 'Sonbahar', emoji: '🍂', accent: 'text-orange-700 dark:text-orange-400' },
-  { id: 'winter', label: 'Kış', emoji: '❄️', accent: 'text-sky-600 dark:text-sky-400' },
-  { id: 'classic', label: 'Klasik Koleksiyon', emoji: '💐', accent: 'text-rose-500 dark:text-rose-400' },
+  { id: 'spring', label: 'Spring', emoji: '🌸', accent: 'text-pink-600 dark:text-pink-400' },
+  { id: 'summer', label: 'Summer', emoji: '☀️', accent: 'text-amber-600 dark:text-amber-400' },
+  { id: 'autumn', label: 'Autumn', emoji: '🍂', accent: 'text-orange-700 dark:text-orange-400' },
+  { id: 'winter', label: 'Winter', emoji: '❄️', accent: 'text-sky-600 dark:text-sky-400' },
+  { id: 'classic', label: 'Classic Collection', emoji: '💐', accent: 'text-rose-500 dark:text-rose-400' },
 ];
 
 export const Header: React.FC = () => {
@@ -19,9 +19,25 @@ export const Header: React.FC = () => {
   const getTotalStems = useBouquetStore((state) => state.getTotalStems);
   const setIsSummaryModalOpen = useBouquetStore((state) => state.setIsSummaryModalOpen);
   const [collectionsOpen, setCollectionsOpen] = useState(false);
+  const [isDark, setIsDark] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const totalStems = getTotalStems();
+
+  useEffect(() => {
+    setIsDark(document.documentElement.classList.contains('dark'));
+  }, []);
+
+  const toggleTheme = () => {
+    const nextDark = !isDark;
+    setIsDark(nextDark);
+    document.documentElement.classList.toggle('dark', nextDark);
+    try {
+      localStorage.setItem('fleur_artisan_theme', nextDark ? 'dark' : 'light');
+    } catch {
+      // ignore
+    }
+  };
 
   useEffect(() => {
     if (!collectionsOpen) return;
@@ -56,7 +72,7 @@ export const Header: React.FC = () => {
             </span>
           </h1>
           <p className="text-[11px] text-stone-400 hidden sm:block">
-            İnteraktif Çiçek & Hediye Tasarım Atölyesi
+            Interactive Flower &amp; Gift Design Studio
           </p>
         </div>
       </div>
@@ -65,12 +81,13 @@ export const Header: React.FC = () => {
       <div ref={dropdownRef} className="hidden lg:flex items-center relative">
         <button
           type="button"
+          data-tour="collections"
           onClick={() => setCollectionsOpen((prev) => !prev)}
           aria-expanded={collectionsOpen}
           className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-stone-100/90 dark:bg-stone-800/90 text-stone-700 dark:text-stone-200 hover:bg-stone-200 dark:hover:bg-stone-700 border border-stone-200/70 dark:border-stone-700/70 transition-colors text-xs font-medium shadow-xs"
         >
           <Sparkles className="w-3.5 h-3.5 text-amber-500" />
-          <span>Koleksiyonlar</span>
+          <span>Collections</span>
           <ChevronDown
             className={`w-3.5 h-3.5 text-stone-400 transition-transform duration-200 ${
               collectionsOpen ? 'rotate-180' : ''
@@ -104,7 +121,7 @@ export const Header: React.FC = () => {
                             {preset.name}
                           </span>
                           <span className="text-[10px] text-stone-400 shrink-0">
-                            {preset.flowers.reduce((acc, f) => acc + f.count, 0)} dal
+                            {preset.flowers.reduce((acc, f) => acc + f.count, 0)} stems
                           </span>
                         </button>
                       ))}
@@ -118,7 +135,7 @@ export const Header: React.FC = () => {
             <div className="mt-3 pt-3 border-t border-stone-100 dark:border-stone-800">
               <div className="text-[11px] font-bold uppercase tracking-wider px-2 mb-1.5 text-rose-500 dark:text-rose-400 flex items-center gap-1.5">
                 <span>💐</span>
-                <span>Klasik Koleksiyon</span>
+                <span>Classic Collection</span>
               </div>
               <div className="flex flex-wrap gap-1.5 px-1">
                 {BOUQUET_PRESETS.filter((p) => (p.season || 'classic') === 'classic').map((preset) => (
@@ -131,7 +148,7 @@ export const Header: React.FC = () => {
                     }}
                     className="px-2.5 py-1 rounded-full text-[11px] font-medium bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-200 hover:bg-rose-50 dark:hover:bg-rose-950/50 hover:text-rose-600 dark:hover:text-rose-300 transition-colors"
                   >
-                    {preset.nameTr.split('&')[0].trim()}
+                    {preset.name}
                   </button>
                 ))}
               </div>
@@ -141,21 +158,42 @@ export const Header: React.FC = () => {
       </div>
 
       {/* Right side checkout pill */}
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-2 sm:gap-2.5">
+        <button
+          type="button"
+          onClick={toggleTheme}
+          className="w-8 h-8 rounded-full flex items-center justify-center bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-200 hover:bg-stone-200 dark:hover:bg-stone-700 transition-colors"
+          title={isDark ? 'Switch to Light Theme' : 'Switch to Dark Theme'}
+          aria-label={isDark ? 'Switch to Light Theme' : 'Switch to Dark Theme'}
+        >
+          {isDark ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4" />}
+        </button>
+
+        <button
+          type="button"
+          onClick={() => window.dispatchEvent(new CustomEvent('bouquet-start-tutorial'))}
+          className="w-8 h-8 rounded-full flex items-center justify-center bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300 hover:bg-stone-200 dark:hover:bg-stone-700 transition-colors"
+          title="Start Studio Guide"
+          aria-label="Start studio guide"
+        >
+          <HelpCircle className="w-4 h-4" />
+        </button>
+
         <div className="hidden sm:flex flex-col items-end">
-          <span className="text-[11px] text-stone-400 font-medium">Buketiniz</span>
+          <span className="text-[11px] text-stone-400 font-medium">Your Bouquet</span>
           <span className="font-serif font-bold text-sm text-stone-900 dark:text-stone-100">
-            {totalStems} dal
+            {totalStems} stems
           </span>
         </div>
 
         <button
           type="button"
+          data-tour="complete-btn"
           onClick={() => setIsSummaryModalOpen(true)}
           className="shrink-0 whitespace-nowrap flex items-center gap-2 px-3.5 py-2 rounded-xl bg-stone-900 text-white hover:bg-stone-800 hover:text-white dark:bg-stone-100 dark:text-stone-900 dark:hover:bg-stone-200 dark:hover:text-stone-950 transition-all text-xs font-medium shadow-sm hover:shadow-md"
         >
           <Sparkles className="w-3.5 h-3.5" />
-          <span>Buketi Tamamla</span>
+          <span>Complete Bouquet</span>
         </button>
       </div>
     </header>

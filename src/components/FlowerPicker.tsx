@@ -56,10 +56,10 @@ export const FlowerPicker: React.FC = () => {
       <div className="pb-3 border-b border-stone-200/60 dark:border-stone-700/60">
         <div className="flex items-center justify-between mb-1.5">
           <div className="flex items-center gap-2">
-            <span className="text-xs uppercase tracking-wider text-stone-500 font-medium">Buket Hacmi</span>
+            <span className="text-xs uppercase tracking-wider text-stone-500 font-medium">Bouquet Capacity</span>
             {isAtMaxCapacity && (
               <span className="px-2 py-0.5 text-[10px] font-semibold bg-amber-100 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300 rounded-full">
-                Maksimum Kapasite
+                Max Capacity
               </span>
             )}
           </div>
@@ -69,7 +69,7 @@ export const FlowerPicker: React.FC = () => {
               className="flex items-center gap-1.5 px-2.5 py-1 text-xs text-rose-600 hover:text-rose-700 hover:bg-rose-50 dark:hover:bg-rose-950/40 rounded-lg transition-colors"
             >
               <Trash2 className="w-3.5 h-3.5" />
-              <span>Sıfırla</span>
+              <span>Clear</span>
             </button>
           )}
         </div>
@@ -77,7 +77,7 @@ export const FlowerPicker: React.FC = () => {
         <p className="text-xl font-serif font-bold text-stone-800 dark:text-stone-100">
           {flowers.length}{' '}
           <span className="text-xs font-sans font-normal text-stone-500">
-            / {MAX_TOTAL_STEMS} dal (İdeal buket formu)
+            / {MAX_TOTAL_STEMS} stems (Ideal bouquet form)
           </span>
         </p>
 
@@ -151,7 +151,7 @@ export const FlowerPicker: React.FC = () => {
                       }
                     }}
                     className="w-7 h-7 flex items-center justify-center rounded-md bg-white dark:bg-stone-800 text-stone-700 dark:text-stone-200 hover:bg-stone-200 dark:hover:bg-stone-700 disabled:opacity-30 disabled:pointer-events-none transition-colors shadow-xs"
-                    title="1 Dal Çıkar"
+                    title="Remove 1 Stem"
                   >
                     <Minus className="w-3.5 h-3.5" />
                   </button>
@@ -172,8 +172,8 @@ export const FlowerPicker: React.FC = () => {
                     className="w-7 h-7 flex items-center justify-center rounded-md bg-stone-900 dark:bg-stone-100 text-white dark:text-stone-900 hover:bg-rose-600 dark:hover:bg-rose-400 disabled:opacity-20 disabled:pointer-events-none transition-colors shadow-xs"
                     title={
                       isAtMaxCapacity
-                        ? `Maksimum buket kapasitesine ulaşıldı (${MAX_TOTAL_STEMS} dal)`
-                        : 'Seçili Renkten 1 Dal Ekle'
+                        ? `Maximum bouquet capacity reached (${MAX_TOTAL_STEMS} stems)`
+                        : 'Add 1 Stem of Selected Color'
                     }
                   >
                     <Plus className="w-3.5 h-3.5" />
@@ -185,11 +185,11 @@ export const FlowerPicker: React.FC = () => {
               {(count > 0 || isSelected) && flower.availableColors.length > 1 && (
                 <div className="mt-3 pt-2.5 border-t border-stone-100 dark:border-stone-700/60">
                   <div className="flex items-center justify-between text-[11px] text-stone-500 mb-1.5">
-                    <span>Eklenecek Renk:</span>
+                    <span>Color to Add:</span>
                     <span className="font-medium text-stone-700 dark:text-stone-300">
                       {flower.availableColors.find(
                         (c) => c.hex.toLowerCase() === activeColor.toLowerCase()
-                      )?.name || 'Özel'}
+                      )?.name || 'Custom'}
                     </span>
                   </div>
                   <div className="flex flex-wrap gap-2">
@@ -213,7 +213,7 @@ export const FlowerPicker: React.FC = () => {
                               : 'border-black/15 hover:scale-105'
                           }`}
                           style={{ backgroundColor: color.hex }}
-                          title={`${color.name}${colorCount > 0 ? ` (${colorCount} dal)` : ''}`}
+                          title={`${color.name}${colorCount > 0 ? ` (${colorCount} stems)` : ''}`}
                         >
                           {isColorActive && (
                             <Check
@@ -239,7 +239,7 @@ export const FlowerPicker: React.FC = () => {
                         const colorName =
                           flower.availableColors.find(
                             (c) => c.hex.toLowerCase() === item.hex.toLowerCase()
-                          )?.name || 'Özel';
+                          )?.name || 'Custom';
                         return (
                           <div
                             key={item.hex}
@@ -266,7 +266,7 @@ export const FlowerPicker: React.FC = () => {
                                   removeFlowerByTypeAndColor(flower.id, item.hex);
                                 }}
                                 className="w-5 h-5 flex items-center justify-center rounded bg-white dark:bg-stone-800 text-stone-700 dark:text-stone-200 hover:bg-stone-200 dark:hover:bg-stone-700"
-                                title={`${colorName} 1 Dal Çıkar`}
+                                title={`Remove 1 ${colorName}`}
                               >
                                 <Minus className="w-3 h-3" />
                               </button>
@@ -283,7 +283,7 @@ export const FlowerPicker: React.FC = () => {
                                   }
                                 }}
                                 className="w-5 h-5 flex items-center justify-center rounded bg-stone-800 dark:bg-stone-200 text-white dark:text-stone-900 hover:bg-rose-600 disabled:opacity-25 disabled:pointer-events-none"
-                                title={`${colorName} 1 Dal Ekle`}
+                                title={`Add 1 ${colorName}`}
                               >
                                 <Plus className="w-3 h-3" />
                               </button>

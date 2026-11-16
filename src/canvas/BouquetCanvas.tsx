@@ -23,7 +23,7 @@ function CanvasLoader() {
     <Html center>
       <div className="flex flex-col items-center justify-center gap-3 p-4 rounded-2xl bg-white/80 backdrop-blur-md shadow-glass text-stone-700">
         <Loader2 className="w-8 h-8 animate-spin text-rose-500" />
-        <span className="text-xs font-medium tracking-wider uppercase">Çiçekler Açıyor...</span>
+        <span className="text-xs font-medium tracking-wider uppercase">Blooming Flowers...</span>
       </div>
     </Html>
   );

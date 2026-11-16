@@ -2,40 +2,40 @@
 
 import React, { useState } from 'react';
 import { useBouquetStore } from '@/store/useBouquetStore';
-import { BOUQUET_PRESETS } from '@/utils/presets';
+import { BOUQUET_PRESETS, FLOWER_DEFINITIONS } from '@/utils/presets';
 import { SeasonCategory } from '@/types';
 import { ArrowRight } from 'lucide-react';
 
 type FilterOption = 'all' | SeasonCategory;
 
 const SEASON_FILTERS: { id: FilterOption; label: string; emoji: string }[] = [
-  { id: 'all', label: 'Tümü', emoji: '✨' },
-  { id: 'spring', label: 'İlkbahar', emoji: '🌸' },
-  { id: 'summer', label: 'Yaz', emoji: '☀️' },
-  { id: 'autumn', label: 'Sonbahar', emoji: '🍂' },
-  { id: 'winter', label: 'Kış', emoji: '❄️' },
-  { id: 'classic', label: 'Klasik', emoji: '💐' },
+  { id: 'all', label: 'All', emoji: '✨' },
+  { id: 'spring', label: 'Spring', emoji: '🌸' },
+  { id: 'summer', label: 'Summer', emoji: '☀️' },
+  { id: 'autumn', label: 'Autumn', emoji: '🍂' },
+  { id: 'winter', label: 'Winter', emoji: '❄️' },
+  { id: 'classic', label: 'Classic', emoji: '💐' },
 ];
 
 const SEASON_LABELS: Record<SeasonCategory, { label: string; badgeClass: string }> = {
   spring: {
-    label: '🌸 İlkbahar Koleksiyonu',
+    label: '🌸 Spring Collection',
     badgeClass: 'text-pink-600 dark:text-pink-400',
   },
   summer: {
-    label: '☀️ Yaz Koleksiyonu',
+    label: '☀️ Summer Collection',
     badgeClass: 'text-amber-600 dark:text-amber-400',
   },
   autumn: {
-    label: '🍂 Sonbahar Koleksiyonu',
+    label: '🍂 Autumn Collection',
     badgeClass: 'text-orange-700 dark:text-orange-400',
   },
   winter: {
-    label: '❄️ Kış Koleksiyonu',
+    label: '❄️ Winter Collection',
     badgeClass: 'text-sky-600 dark:text-sky-400',
   },
   classic: {
-    label: '💐 Özel Koleksiyon',
+    label: '💐 Classic Collection',
     badgeClass: 'text-rose-500',
   },
 };
@@ -52,7 +52,7 @@ export const PresetsTab: React.FC = () => {
   return (
     <div className="flex flex-col gap-4">
       <div className="text-xs text-stone-500 mb-0.5">
-        Mevsimlere göre ayrılmış hazır koleksiyon buketlerinden birini seçerek anında başlayabilirsiniz:
+        Start instantly by choosing one of our curated seasonal bouquet collections:
       </div>
 
       {/* Season Filter Pills */}
@@ -83,7 +83,10 @@ export const PresetsTab: React.FC = () => {
           return (
             <div
               key={preset.id}
-              onClick={() => loadPreset(preset.id)}
+              onClick={() => {
+                loadPreset(preset.id);
+                window.dispatchEvent(new CustomEvent('bouquet-close-mobile-panel'));
+              }}
               className="p-4 rounded-xl border border-stone-200/80 dark:border-stone-700/80 bg-white/70 dark:bg-stone-800/70 hover:bg-white dark:hover:bg-stone-800 transition-all duration-200 cursor-pointer shadow-xs hover:shadow-md group"
             >
               <div className="flex items-start justify-between gap-2">
@@ -94,7 +97,7 @@ export const PresetsTab: React.FC = () => {
                     {seasonMeta.label}
                   </span>
                   <h4 className="font-serif font-bold text-base text-stone-900 dark:text-stone-100 group-hover:text-rose-600 transition-colors">
-                    {preset.nameTr}
+                    {preset.name}
                   </h4>
                 </div>
                 <div className="w-8 h-8 rounded-full bg-rose-50 dark:bg-rose-950/40 text-rose-500 flex items-center justify-center group-hover:translate-x-1 transition-transform">
@@ -121,11 +124,11 @@ export const PresetsTab: React.FC = () => {
                     className="w-1.5 h-1.5 rounded-full"
                     style={{ backgroundColor: f.color || '#c9184a' }}
                   />
-                  {f.count}x {f.type}
+                  {f.count}x {FLOWER_DEFINITIONS[f.type].name}
                 </span>
               ))}
               <span className="px-2 py-0.5 bg-amber-50 dark:bg-amber-950/40 text-amber-800 dark:text-amber-300 text-[10px] font-medium rounded-full">
-                {preset.wrapping.type === 'newspaper' ? 'Vintage Gazete' : preset.wrapping.type}
+                {preset.wrapping.type === 'newspaper' ? 'Vintage Newspaper' : preset.wrapping.type}
               </span>
             </div>
           </div>

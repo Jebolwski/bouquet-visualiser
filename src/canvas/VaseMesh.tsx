@@ -212,8 +212,8 @@ export const VaseMesh: React.FC = () => {
     if (wrapping.type === 'vase_teardrop') {
       // Photo 1: Tapered teardrop clear glass vase (narrow neck, round wide belly)
       const profile: VaseProfilePoint[] = [
-        { y: 0.0, r: 0.42 * neckScale },
-        { y: 0.12, r: 0.58 * neckScale },
+        { y: 0.0, r: 0.46 * neckScale },
+        { y: 0.12, r: 0.60 * neckScale },
         { y: 0.38, r: 0.68 * neckScale },
         { y: 0.72, r: 0.62 * neckScale },
         { y: 1.05, r: 0.46 * neckScale },
@@ -226,9 +226,9 @@ export const VaseMesh: React.FC = () => {
     if (wrapping.type === 'vase_ribbed') {
       // Photo 2: Ribbed mercury-gold / ceramic urn vase
       const profile: VaseProfilePoint[] = [
-        { y: 0.0, r: 0.36 * neckScale },
-        { y: 0.06, r: 0.34 * neckScale },
-        { y: 0.28, r: 0.52 * neckScale },
+        { y: 0.0, r: 0.41 * neckScale },
+        { y: 0.06, r: 0.39 * neckScale },
+        { y: 0.28, r: 0.54 * neckScale },
         { y: 0.68, r: 0.64 * neckScale },
         { y: 1.06, r: 0.58 * neckScale },
         { y: 1.28, r: 0.40 * neckScale },
@@ -239,8 +239,8 @@ export const VaseMesh: React.FC = () => {
 
     // Photo 3: Tall classic clear glass vase
     const profile: VaseProfilePoint[] = [
-      { y: 0.0, r: 0.38 * neckScale },
-      { y: 0.25, r: 0.44 * neckScale },
+      { y: 0.0, r: 0.43 * neckScale },
+      { y: 0.25, r: 0.47 * neckScale },
       { y: 0.75, r: 0.54 * neckScale },
       { y: 1.18, r: 0.53 * neckScale },
       { y: 1.48, r: 0.44 * neckScale },

@@ -10,11 +10,11 @@ export const CardEditorTab: React.FC = () => {
   const toggleCard = useBouquetStore((state) => state.toggleCard);
 
   const quickMessages = [
-    'Hayatıma kattığın tüm güzellikler için...',
-    'Yeni yaşın çiçekler gibi neşe ve huzur getirsin! 🌸',
-    'Gülüşün gibi ışıl ışıl bir gün dilerim.',
-    'Her daim kalbimin en zarif köşesindesin.',
-    'Tebrikler ve sonsuz mutluluklar dilerim! 🥂',
+    'For all the beauty you bring into my life...',
+    'May your new year bloom with joy and peace! 🌸',
+    'Wishing you a day as bright as your smile.',
+    'Always in the dearest corner of my heart.',
+    'Congratulations and endless happiness! 🥂',
   ];
 
   return (
@@ -27,10 +27,10 @@ export const CardEditorTab: React.FC = () => {
           </div>
           <div>
             <h4 className="text-xs font-serif font-bold text-stone-900 dark:text-stone-100">
-              3D Hediye Not Kartı
+              3D Gift Note Card
             </h4>
             <p className="text-[11px] text-stone-500">
-              Buket ambalajına iliştirilmiş özel mesaj kartı
+              Custom greeting card tucked into the bouquet wrap
             </p>
           </div>
         </div>
@@ -55,13 +55,13 @@ export const CardEditorTab: React.FC = () => {
           {/* Card Inputs */}
           <div>
             <label className="text-[11px] uppercase tracking-wider text-stone-500 font-medium block mb-1">
-              Kime (Alıcı Adı):
+              To (Recipient Name):
             </label>
             <input
               type="text"
               value={card.to}
               onChange={(e) => updateCard({ to: e.target.value })}
-              placeholder="Örn: Sevgilime, Ayşe'ye, Canım Anneme..."
+              placeholder="e.g., My Love, Emma, Dear Mom..."
               className="w-full px-3 py-2 text-sm bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-400 text-stone-800 dark:text-stone-100"
             />
           </div>
@@ -69,7 +69,7 @@ export const CardEditorTab: React.FC = () => {
           <div>
             <div className="flex items-center justify-between mb-1">
               <label className="text-[11px] uppercase tracking-wider text-stone-500 font-medium">
-                Özel Mesajınız:
+                Your Message:
               </label>
               <span className="text-[10px] text-stone-400">{card.message.length}/120</span>
             </div>
@@ -78,14 +78,14 @@ export const CardEditorTab: React.FC = () => {
               maxLength={120}
               value={card.message}
               onChange={(e) => updateCard({ message: e.target.value })}
-              placeholder="Bukete iliştirilecek sevgi dolu cümleniz..."
+              placeholder="Write a heartfelt note for your bouquet..."
               className="w-full px-3 py-2 text-sm bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-400 text-stone-800 dark:text-stone-100 resize-none"
             />
           </div>
 
           {/* Quick Message Chips */}
           <div>
-            <span className="text-[10px] text-stone-400 block mb-1.5">Hazır İpuçları:</span>
+            <span className="text-[10px] text-stone-400 block mb-1.5">Quick Prompts:</span>
             <div className="flex flex-wrap gap-1.5">
               {quickMessages.map((msg, i) => (
                 <button
@@ -102,13 +102,13 @@ export const CardEditorTab: React.FC = () => {
 
           <div>
             <label className="text-[11px] uppercase tracking-wider text-stone-500 font-medium block mb-1">
-              Kimden (Gönderen İmzası):
+              From (Signature):
             </label>
             <input
               type="text"
               value={card.from}
               onChange={(e) => updateCard({ from: e.target.value })}
-              placeholder="Örn: Mert, Sevgilerle..."
+              placeholder="e.g., Alex, With Love..."
               className="w-full px-3 py-2 text-sm bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-400 text-stone-800 dark:text-stone-100"
             />
           </div>
@@ -116,12 +116,12 @@ export const CardEditorTab: React.FC = () => {
           {/* Typography Style */}
           <div>
             <label className="text-[11px] uppercase tracking-wider text-stone-500 font-medium block mb-1.5">
-              Yazı Karakteri (Tipografi):
+              Typography Style:
             </label>
             <div className="grid grid-cols-3 gap-2">
               {[
-                { id: 'handwriting', label: 'El Yazısı' },
-                { id: 'serif', label: 'Zarif Roman' },
+                { id: 'handwriting', label: 'Handwriting' },
+                { id: 'serif', label: 'Classic Serif' },
                 { id: 'modern', label: 'Modern Sans' },
               ].map((font) => (
                 <button
@@ -146,10 +146,10 @@ export const CardEditorTab: React.FC = () => {
               <Heart className="w-4 h-4 fill-rose-200" />
             </div>
             <p className="text-xs italic text-stone-600 dark:text-stone-400 mb-1">
-              {card.to ? `Sevgili ${card.to},` : 'Kime,'}
+              {card.to ? `Dear ${card.to},` : 'To,'}
             </p>
             <p className="text-sm font-serif font-medium text-stone-800 dark:text-stone-100 my-2 px-2">
-              "{card.message || 'Özel notunuz burada yer alacak...'}"
+              "{card.message || 'Your special note will appear here...'}"
             </p>
             {card.from && (
               <p className="text-xs font-serif italic text-stone-600 dark:text-stone-400 text-right pr-4">

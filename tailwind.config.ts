@@ -1,6 +1,7 @@
 import type { Config } from "tailwindcss";
 
 const config: Config = {
+  darkMode: "class",
   content: [
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
@@ -36,8 +37,8 @@ const config: Config = {
       },
       fontFamily: {
         serif: ["'Agrave Pro'", "Georgia", "serif"],
-        sans: ["'Agrave Pro'", "system-ui", "sans-serif"],
-        mono: ["'Agrave Pro'", "ui-monospace", "monospace"],
+        sans: ["'Inter'", "system-ui", "-apple-system", "BlinkMacSystemFont", "'Segoe UI'", "Roboto", "sans-serif"],
+        mono: ["ui-monospace", "SFMono-Regular", "Menlo", "monospace"],
       },
       boxShadow: {
         glass: "0 8px 32px 0 rgba(0, 0, 0, 0.08)",

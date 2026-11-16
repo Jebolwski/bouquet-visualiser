@@ -6,6 +6,7 @@ import { createCardCanvas } from '@/utils/textures';
 import {
   getWrapDimensions,
   getRibbonGeometry,
+  getStemBundleRadius,
   WRAP_LAPEL,
   WAIST_Y,
 } from '@/utils/math';
@@ -53,7 +54,43 @@ export const GreetingCardMesh: React.FC = () => {
     </mesh>
   );
 
-  if (isVaseWrapping(wrappingType)) return null;
+  // ------------------------------------------------------------------
+  // 0) VASE: card displayed in a brass florist stand beside the vase on the podium
+  // ------------------------------------------------------------------
+  if (isVaseWrapping(wrappingType)) {
+    const bundleR = getStemBundleRadius(totalStems, arrangementStyle);
+    const neckScale = Math.max(1.0, ((bundleR + stemSpread * 0.04) * 1.45 + 0.12) / 0.34);
+    const standX = 0.66 * neckScale + 0.18;
+    const standZ = 0.42;
+    const cardScale = 0.85;
+
+    return (
+      <group position={[standX, -1.5, standZ]} rotation={[0, -0.36, 0]}>
+        {/* Weighted brass base resting on podium */}
+        <mesh position={[0, 0.012, 0]} castShadow receiveShadow>
+          <cylinderGeometry args={[0.1, 0.115, 0.024, 24]} />
+          <meshStandardMaterial color="#c59b27" metalness={0.82} roughness={0.25} />
+        </mesh>
+
+        {/* Slender brass stand stem */}
+        <mesh position={[0, 0.17, 0]} castShadow>
+          <cylinderGeometry args={[0.008, 0.009, 0.32, 10]} />
+          <meshStandardMaterial color="#c59b27" metalness={0.85} roughness={0.22} />
+        </mesh>
+
+        {/* Top brass clasp */}
+        <mesh position={[0, 0.33, 0]} castShadow>
+          <sphereGeometry args={[0.018, 12, 12]} />
+          <meshStandardMaterial color="#c59b27" metalness={0.85} roughness={0.22} />
+        </mesh>
+
+        {/* Greeting card tilted slightly upward toward viewer */}
+        <group position={[0, 0.33 + (CARD_H * cardScale) / 2, 0.012]} rotation={[-0.22, 0, 0]} scale={cardScale}>
+          {cardBody}
+        </group>
+      </group>
+    );
+  }
 
   // ------------------------------------------------------------------
   // A) WRAPPED: card pinned flat against the OUTSIDE of the paper cone
@@ -67,20 +104,25 @@ export const GreetingCardMesh: React.FC = () => {
     );
     const { bottomY, height } = WRAP_LAPEL;
 
+    const azimuth = 0.32; // slightly right of the bow
+    const isFan = arrangementStyle === 'fan';
+    // In fan mode, createFanAwareConeGeometry lowers the front (+Z) rim by 0.16 * cos(azimuth),
+    // which increases both the radius at a given Y and the front wall flare angle.
+    const effectiveHeight = height + (isFan ? -0.16 * Math.cos(azimuth) : 0);
+
     // Cone surface radius at a given height (outermost lapel layer, world units)
     const radiusAt = (y: number) =>
-      lapelWaistRadius + ((y - bottomY) / height) * (lapelTopRadius - lapelWaistRadius);
+      lapelWaistRadius + ((y - bottomY) / effectiveHeight) * (lapelTopRadius - lapelWaistRadius);
 
     // Slope of the paper wall (it flares outward going up)
-    const slope = (lapelTopRadius - lapelWaistRadius) / height;
+    const slope = (lapelTopRadius - lapelWaistRadius) / effectiveHeight;
     const tilt = Math.atan(slope);
 
     const cardScale = totalStems <= 1 ? 0.72 : 1.0;
-    const centerY = totalStems <= 1 ? 0.62 : 0.68;
-    const margin = 0.03 + (CARD_T * cardScale) / 2; // sits just on top of the paper
+    const centerY = totalStems <= 1 ? (isFan ? 0.56 : 0.62) : isFan ? 0.61 : 0.68;
+    const margin = 0.036 + (CARD_T * cardScale) / 2; // sits cleanly on top of the paper
     // Offset outward along the wall normal so the flat card never dips into the curved paper
     const surfaceR = radiusAt(centerY) + margin * Math.cos(tilt);
-    const azimuth = 0.32; // slightly right of the bow
 
     return (
       <group rotation={[0, azimuth, 0]}>
